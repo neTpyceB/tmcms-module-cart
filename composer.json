@@ -1,0 +1,21 @@
+{
+  "name": "neTpyceB/TMCms-module-carts",
+  "type": "library",
+  "description": "Module Carts for TMCms",
+  "keywords": ["module", "carts"],
+  "homepage": "http://devp.lv/",
+  "license": "proprietary",
+  "authors": [
+    {
+      "name": "Vadims Petrusevs",
+      "email": "info@devp.lv",
+      "homepage": "http://devp.lv/",
+      "role": "Developer"
+    }
+  ],
+  "autoload": {
+    "psr-4": {
+      "TMCms\\": "src"
+    }
+  }
+}
