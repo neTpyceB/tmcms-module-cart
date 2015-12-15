@@ -1,10 +1,10 @@
 <?php
 
-namespace TMCms\Modules\Carts;
+namespace TMCms\Modules\Cart;
 
 defined('INC') or exit;
 
-class CmsCarts
+class CmsCart
 {
     public function _default()
     {

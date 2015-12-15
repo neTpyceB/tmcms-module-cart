@@ -1,6 +1,6 @@
 <?php
 
-namespace neTpyceB\TMCms\Modules\Carts;
+namespace TMCms\Modules\Cart;
 
 use neTpyceB\TMCms\Modules\IModule;
 use neTpyceB\TMCms\Traits\singletonInstanceTrait;
@@ -11,7 +11,7 @@ use TMCms\Modules\Cart\Entity\CartItemEntityRepository;
 
 defined('INC') or exit;
 
-class ModuleCarts implements IModule
+class ModuleCart implements IModule
 {
     use singletonInstanceTrait;
 
