@@ -1,0 +1,7 @@
+CREATE TABLE IF NOT EXISTS `m_carts` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `cart_uid` char(32) NOT NULL COMMENT 'md5 of VISITOR_HASH',
+  `client_id` int(10) unsigned NOT NULL,
+  `last_activity_ts` int(10) unsigned NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;

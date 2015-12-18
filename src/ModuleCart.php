@@ -68,17 +68,15 @@ class ModuleCart implements IModule
 
     /**
      * @param CartItemEntity $item
-     * @param int $amount to plus or minus
-     * @param string $type
      * @return CartItemEntity
      */
-    public static function addItem(CartItemEntity $item, $amount = 1, $type = 'product')
+    public static function addItem(CartItemEntity $item)
     {
         $cart = self::getCurrentCart();
 
         $product_collection = new CartItemEntityRepository();
         $product_collection->setWhereCartId($cart->getId());
-        $product_collection->setWhereItemType($type);
+        $product_collection->setWhereItemType($item->getItemType());
         $product_collection->setWhereItemId($item->getId());
 
         // Existing product in DB
@@ -88,11 +86,11 @@ class ModuleCart implements IModule
             // Or new
             $product = new CartItemEntity();
             $product->setCartId($cart->getId());
-            $product->setItemType($type);
+            $product->setItemType($item->getItemType());
             $product->setItemId($item->getId());
         }
 
-        $product->setAmount($product->getAmount() + $amount);
+        $product->setAmount($product->getAmount() + $item->getAmount());
         $product->save();
 
         // If amount set to zero - remove from cart
@@ -106,15 +104,18 @@ class ModuleCart implements IModule
     /**
      * @return array of data
      */
-    public static function getCurrentCartProductIds()
+    public static function getCurrentCartProductIds($type = '')
     {
         $cart = self::getCurrentCart();
 
         $product_collection = new CartItemEntityRepository();
-        $product_collection->addSimpleSelectFields('id');
+        $product_collection->addSimpleSelectFields('id', 'item_id', 'item_type');
         $product_collection->setWhereCartId($cart->getId());
+        if ($type) {
+            $product_collection->setWhereItemType($type);
+        }
 
-        return $product_collection->getPairs('id', '');
+        return $product_collection->getAsArrayOfObjects();
     }
 
     private static function removeOldCarts()

@@ -8,11 +8,14 @@ use neTpyceB\TMCms\Orm\Entity;
  * Class CartItemEntity
  * @package TMCms\Modules\Cart\Entity
  *
- * @method setCartId(int $id)
  * @method int getAmount()
- * @method setAmount(int $amount)
- * @method setItemId(int $id)
- * @method setItemType(string $type)
+ * @method int getCartId()
+ * @method int getItemId()
+ * @method string getItemType()
+ * @method $this setAmount(int $amount)
+ * @method $this setCartId(int $id)
+ * @method $this setItemId(int $id)
+ * @method $this setItemType(string $type)
  */
 class CartItemEntity extends Entity
 {
