@@ -92,9 +92,8 @@ class ModuleCart implements IModule
 
         $product->setAmount($product->getAmount() + $item->getAmount());
         $product->save();
-
         // If amount set to zero - remove from cart
-        if ($product->getAmount() == 0) {
+        if ($item->getAmount() == 0) {
             $product->deleteObject();
         }
 
