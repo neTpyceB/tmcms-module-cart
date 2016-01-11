@@ -2,8 +2,7 @@
 
 namespace TMCms\Modules\Cart;
 
-use neTpyceB\TMCms\Modules\IModule;
-use neTpyceB\TMCms\Traits\singletonInstanceTrait;
+use TMCms\Traits\singletonInstanceTrait;
 use TMCms\Modules\Cart\Entity\CartEntity;
 use TMCms\Modules\Cart\Entity\CartEntityRepository;
 use TMCms\Modules\Cart\Entity\CartItemEntity;
@@ -11,7 +10,7 @@ use TMCms\Modules\Cart\Entity\CartItemEntityRepository;
 
 defined('INC') or exit;
 
-class ModuleCart implements IModule
+class ModuleCart
 {
     use singletonInstanceTrait;
 
@@ -47,7 +46,6 @@ class ModuleCart implements IModule
 
         //Save for cache
         self::$_cart = $cart;
-
         return $cart;
     }
 
