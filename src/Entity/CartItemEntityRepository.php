@@ -15,4 +15,21 @@ use TMCms\Orm\EntityRepository;
 class CartItemEntityRepository extends EntityRepository
 {
     protected $db_table = 'm_carts_items';
+    protected $table_structure = [
+        'fields' => [
+            'cart_id' => [
+                'type' => 'index',
+            ],
+            'item_id' => [
+                'type' => 'index',
+            ],
+            'item_type' => [
+                'type' => 'varchar',
+            ],
+            'amount' => [
+                'type' => 'int',
+                'unsigned' => true,
+            ],
+        ],
+    ];
 }
