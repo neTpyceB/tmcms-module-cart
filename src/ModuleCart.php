@@ -91,7 +91,7 @@ class ModuleCart
         $product->setAmount($product->getAmount() + $item->getAmount());
         $product->save();
         // If amount set to zero - remove from cart
-        if ($item->getAmount() == 0) {
+        if ($item->getAmount() <= 0) {
             $product->deleteObject();
         }
 
@@ -99,6 +99,7 @@ class ModuleCart
     }
 
     /**
+     * @param string $type
      * @return array of data
      */
     public static function getCurrentCartProductIds($type = '')
@@ -106,7 +107,7 @@ class ModuleCart
         $cart = self::getCurrentCart();
 
         $product_collection = new CartItemEntityRepository();
-        $product_collection->addSimpleSelectFields('id', 'item_id', 'item_type');
+        $product_collection->addSimpleSelectFields(['id', 'item_id', 'item_type']);
         $product_collection->setWhereCartId($cart->getId());
         if ($type) {
             $product_collection->setWhereItemType($type);
@@ -124,5 +125,41 @@ class ModuleCart
         $cart_collection = new CartEntityRepository();
         $cart_collection->setWhereLastActivityTs(NOW - (86400 * 7)); // One week ago
         $cart_collection->deleteObjectCollection();
+    }
+
+    /**
+     * @param CartItemEntity $item
+     * @return CartItemEntity|\TMCms\Orm\Entity
+     */
+    public static function setItemInCart(CartItemEntity $item)
+    {
+        $cart = self::getCurrentCart();
+
+        $product_collection = new CartItemEntityRepository();
+        $product_collection->setWhereCartId($cart->getId());
+        $product_collection->setWhereItemType($item->getItemType());
+        $product_collection->setWhereItemId($item->getId());
+
+        // Existing product in DB
+        $product = $product_collection->getFirstObjectFromCollection();
+
+        /** @var CartItemEntity $product */
+        if (!$product) {
+            // Or new
+            $product = new CartItemEntity();
+            $product->setCartId($cart->getId());
+            $product->setItemType($item->getItemType());
+            $product->setItemId($item->getId());
+        }
+
+        // Set exact amount
+        $product->setAmount($item->getAmount());
+        $product->save();
+        // If amount set to zero - remove from cart
+        if ($item->getAmount() <= 0) {
+            $product->deleteObject();
+        }
+
+        return $product;
     }
 }
