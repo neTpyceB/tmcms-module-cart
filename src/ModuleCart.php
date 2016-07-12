@@ -77,7 +77,7 @@ class ModuleCart
         $product_collection->setWhereItemType($item->getItemType());
         $product_collection->setWhereItemId($item->getId());
 
-        if (!empty($item->getCapacity())) {
+        if ($item->getCapacity()) {
             $product_collection->setWhereCapacity($item->getCapacity());
         }
 
@@ -92,7 +92,7 @@ class ModuleCart
             $product->setItemId($item->getId());
         }
 
-        if (!empty($item->getCapacity())) {
+        if ($item->getCapacity()) {
             $product->setCapacity($item->getCapacity());
         }
 
