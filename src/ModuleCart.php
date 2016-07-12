@@ -77,6 +77,10 @@ class ModuleCart
         $product_collection->setWhereItemType($item->getItemType());
         $product_collection->setWhereItemId($item->getId());
 
+        if (!empty($item->getCapacity())) {
+            $product_collection->setWhereCapacity($item->getCapacity());
+        }
+
         // Existing product in DB
         $product = $product_collection->getFirstObjectFromCollection();
         /** @var CartItemEntity $product */
@@ -86,6 +90,10 @@ class ModuleCart
             $product->setCartId($cart->getId());
             $product->setItemType($item->getItemType());
             $product->setItemId($item->getId());
+        }
+
+        if (!empty($item->getCapacity())) {
+            $product->setCapacity($item->getCapacity());
         }
 
         $product->setAmount($product->getAmount() + $item->getAmount());
