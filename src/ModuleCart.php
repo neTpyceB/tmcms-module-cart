@@ -74,15 +74,11 @@ class ModuleCart
 
         $product_collection = new CartItemEntityRepository();
         $product_collection->setWhereCartId($cart->getId());
-        $product_collection->setWhereItemType($item->getItemType());
         $product_collection->setWhereItemId($item->getId());
-
-        if ($item->getCapacity()) {
-            $product_collection->setWhereCapacity($item->getCapacity());
-        }
 
         // Existing product in DB
         $product = $product_collection->getFirstObjectFromCollection();
+
         /** @var CartItemEntity $product */
         if (!$product) {
             // Or new
@@ -92,11 +88,10 @@ class ModuleCart
             $product->setItemId($item->getId());
         }
 
-        if ($item->getCapacity()) {
-            $product->setCapacity($item->getCapacity());
+        if ($item->getAmount()) {
+            $product->setAmount($item->getAmount());
         }
 
-        $product->setAmount($product->getAmount() + $item->getAmount());
         $product->save();
         // If amount set to zero - remove from cart
         if ($item->getAmount() <= 0) {
