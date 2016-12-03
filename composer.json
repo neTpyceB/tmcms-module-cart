@@ -1,15 +1,15 @@
-{
-  "name": "neTpyceB/TMCms-module-cart",
+u{
+  "name": "devp-eu/tmcms-module-cart",
   "type": "library",
   "description": "Module Carts for TMCms",
-  "keywords": ["module", "carts"],
-  "homepage": "http://devp.lv/",
+  "keywords": ["module", "carts", "TMCms"],
+  "homepage": "http://devp.eu/",
   "license": "proprietary",
   "authors": [
     {
       "name": "Vadims Petrusevs",
-      "email": "info@devp.lv",
-      "homepage": "http://devp.lv/",
+      "email": "info@devp.eu",
+      "homepage": "http://devp.eu/",
       "role": "Developer"
     }
   ],
