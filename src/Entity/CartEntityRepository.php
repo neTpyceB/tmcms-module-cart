@@ -8,6 +8,7 @@ use TMCms\Orm\EntityRepository;
  * Class CartEntityRepository
  * @package TMCms\Modules\Cart\Entity
  *
+ * @method setWhereClientId(int $client_id)
  * @method setWhereLastActivityTs(int $ts)
  * @method setWhereUid(string $uid)
  */

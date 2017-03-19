@@ -8,6 +8,7 @@ use TMCms\Orm\Entity;
  * Class CartEntity
  * @package TMCms\Modules\Cart\Entity
  *
+ * @method setClientId(int $client_id)
  * @method setLastActivityTs(int $ts)
  * @method setUid(string $uid)
  */
