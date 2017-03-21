@@ -2,6 +2,7 @@
 
 namespace TMCms\Modules\Cart;
 
+use TMCms\Orm\Entity;
 use TMCms\Traits\singletonInstanceTrait;
 use TMCms\Modules\Cart\Entity\CartEntity;
 use TMCms\Modules\Cart\Entity\CartEntityRepository;
@@ -19,7 +20,7 @@ class ModuleCart
 
     /**
      * @param string $product_type
-     * @return CartItemEntity
+     * @return array
      */
     public static function getCurrentCartItems($product_type = 'product')
     {
@@ -29,10 +30,10 @@ class ModuleCart
         $product_collection->setWhereCartId($cart->getId());
         $product_collection->setWhereItemType($product_type);
 
-        /** @var CartItemEntity $cart_item */
-        $cart_item = $product_collection->getFirstObjectFromCollection();
+        /** @var array $cart_items */
+        $cart_items = $product_collection->getAsArrayOfObjects();
 
-        return $cart_item;
+        return $cart_items;
     }
 
     /**
@@ -86,6 +87,21 @@ class ModuleCart
         $cart_collection->deleteObjectCollection();
     }
 
+    public static function getCurrentCartItem($product_id, $product_type = 'product')
+    {
+        $cart = self::getCurrentCart();
+
+        $product_collection = new CartItemEntityRepository();
+        $product_collection->setWhereCartId($cart->getId());
+        $product_collection->setWhereItemType($product_type);
+        $product_collection->setWhereItemId($product_id);
+
+        /** @var CartItemEntity $cart_item */
+        $cart_item = $product_collection->getFirstObjectFromCollection();
+
+        return $cart_item;
+    }
+
     /**
      * @param CartItemEntity $cart_item
      * @return CartItemEntity
@@ -133,13 +149,12 @@ class ModuleCart
         $cart = self::getCurrentCart();
 
         $product_collection = new CartItemEntityRepository();
-        $product_collection->addSimpleSelectFields(['id', 'item_id', 'item_type']);
         $product_collection->setWhereCartId($cart->getId());
         if ($product_type) {
             $product_collection->setWhereItemType($product_type);
         }
 
-        return $product_collection->getAsArrayOfObjects();
+        return $product_collection->getPairs('item_id');
     }
 
     /**
