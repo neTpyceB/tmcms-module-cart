@@ -112,6 +112,7 @@ class ModuleCart
 
         $product_collection = new CartItemEntityRepository();
         $product_collection->setWhereCartId($cart->getId());
+        $product_collection->setWhereItemType($cart_item->getItemType());
         $product_collection->setWhereItemId($cart_item->getItemId());
 
         // Existing product in DB
