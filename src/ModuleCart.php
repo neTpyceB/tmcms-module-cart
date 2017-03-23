@@ -2,12 +2,11 @@
 
 namespace TMCms\Modules\Cart;
 
-use TMCms\Orm\Entity;
-use TMCms\Traits\singletonInstanceTrait;
 use TMCms\Modules\Cart\Entity\CartEntity;
 use TMCms\Modules\Cart\Entity\CartEntityRepository;
 use TMCms\Modules\Cart\Entity\CartItemEntity;
 use TMCms\Modules\Cart\Entity\CartItemEntityRepository;
+use TMCms\Traits\singletonInstanceTrait;
 
 defined('INC') or exit;
 
@@ -192,5 +191,11 @@ class ModuleCart
         }
 
         return $product;
+    }
+
+    public static function clearCurrentCart() {
+        $cart = self::getCurrentCart();
+
+        $cart->deleteObject();
     }
 }
