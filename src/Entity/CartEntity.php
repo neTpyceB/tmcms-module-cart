@@ -15,4 +15,14 @@ use TMCms\Orm\Entity;
 class CartEntity extends Entity
 {
     protected $db_table = 'm_carts';
+
+    protected function beforeDelete()
+    {
+        // Delete all items from cart
+        $items = new CartItemEntityRepository();
+        $items->setWhereCartId($this->getId());
+        $items->deleteObjectCollection();
+
+        return $this;
+    }
 }
