@@ -6,9 +6,10 @@ use TMCms\Modules\Cart\Entity\CartEntity;
 use TMCms\Modules\Cart\Entity\CartEntityRepository;
 use TMCms\Modules\Cart\Entity\CartItemEntity;
 use TMCms\Modules\Cart\Entity\CartItemEntityRepository;
+use TMCms\Orm\Entity;
 use TMCms\Traits\singletonInstanceTrait;
 
-defined('INC') or exit;
+\defined('INC') or exit;
 
 class ModuleCart
 {
@@ -19,9 +20,10 @@ class ModuleCart
 
     /**
      * @param string $product_type
+     *
      * @return array
      */
-    public static function getCurrentCartItems($product_type = 'product')
+    public static function getCurrentCartItems(string $product_type): array
     {
         $cart = self::getCurrentCart();
 
@@ -29,10 +31,7 @@ class ModuleCart
         $product_collection->setWhereCartId($cart->getId());
         $product_collection->setWhereItemType($product_type);
 
-        /** @var array $cart_items */
-        $cart_items = $product_collection->getAsArrayOfObjects();
-
-        return $cart_items;
+        return $product_collection->getAsArrayOfObjects();
     }
 
     /**
@@ -86,7 +85,13 @@ class ModuleCart
         $cart_collection->deleteObjectCollection();
     }
 
-    public static function getCurrentCartItem($product_id, $product_type = 'product')
+    /**
+     * @param int $product_id
+     * @param string $product_type
+     *
+     * @return CartItemEntity
+     */
+    public static function getCurrentCartItem($product_id, $product_type): CartItemEntity
     {
         $cart = self::getCurrentCart();
 
@@ -103,11 +108,17 @@ class ModuleCart
 
     /**
      * @param CartItemEntity $cart_item
+     * @param int $amount
      * @return CartItemEntity
      */
-    public static function addItem(CartItemEntity $cart_item)
+    public static function addItem(CartItemEntity $cart_item, $amount = 0)
     {
         $cart = self::getCurrentCart();
+
+        // For easier way
+        if ($amount) {
+            $cart_item->setAmount($amount);
+        }
 
         $product_collection = new CartItemEntityRepository();
         $product_collection->setWhereCartId($cart->getId());
@@ -126,12 +137,13 @@ class ModuleCart
             $product->setItemId($cart_item->getItemId());
         }
 
-        // Set total amount
+        // Set total amount after calculations
         if ($cart_item->getAmount()) {
-            $product->setAmount($cart_item->getAmount());
+            $product->setAmount($product->getAmount() + $cart_item->getAmount());
         }
 
         $product->save();
+
         // If amount set to zero - remove from cart
         if ($cart_item->getAmount() <= 0) {
             $product->deleteObject();
@@ -185,6 +197,7 @@ class ModuleCart
         // Set exact amount
         $product->setAmount($cart_item->getAmount());
         $product->save();
+
         // If amount set to zero - remove from cart
         if ($cart_item->getAmount() <= 0) {
             $product->deleteObject();
@@ -197,5 +210,18 @@ class ModuleCart
         $cart = self::getCurrentCart();
 
         $cart->deleteObject();
+    }
+
+    /**
+     * @param Entity $product
+     * @return CartItemEntity
+     */
+    public static function createCartItemFromProductObject(Entity $product): CartItemEntity
+    {
+        $cart_item = new CartItemEntity;
+        $cart_item->setItemId($product->getId());
+        $cart_item->setItemType($product->getUnqualifiedShortClassName());
+
+        return $cart_item;
     }
 }
