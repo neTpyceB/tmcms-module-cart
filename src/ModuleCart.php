@@ -153,17 +153,19 @@ class ModuleCart
     }
 
     /**
-     * @param string $product_type
+     * @param Entity|null $product
+     *
      * @return array of data
+     *
      */
-    public static function getCurrentCartProductIds($product_type = '')
+    public static function getCurrentCartProductIds(Entity $product = null): array
     {
         $cart = self::getCurrentCart();
 
         $product_collection = new CartItemEntityRepository();
         $product_collection->setWhereCartId($cart->getId());
-        if ($product_type) {
-            $product_collection->setWhereItemType($product_type);
+        if ($product) {
+            $product_collection->setWhereItemType($product->getUnqualifiedShortClassName());
         }
 
         return $product_collection->getPairs('item_id');
