@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace TMCms\Modules\Cart;
 
@@ -11,6 +12,10 @@ use TMCms\Traits\singletonInstanceTrait;
 
 \defined('INC') or exit;
 
+/**
+ * Class ModuleCart
+ * @package TMCms\Modules\Cart
+ */
 class ModuleCart
 {
     use singletonInstanceTrait;
@@ -76,7 +81,7 @@ class ModuleCart
 
     private static function removeOldCarts()
     {
-        if (rand(0, 10000)) {
+        if (random_int(0, 10000)) {
             return;
         }
 
@@ -86,22 +91,28 @@ class ModuleCart
     }
 
     /**
-     * @param int $product_id
-     * @param string $product_type
+     * @param Entity $product
      *
      * @return CartItemEntity
      */
-    public static function getCurrentCartItem($product_id, $product_type): CartItemEntity
+    public static function getCurrentCartItem(Entity $product): CartItemEntity
     {
         $cart = self::getCurrentCart();
 
         $product_collection = new CartItemEntityRepository();
         $product_collection->setWhereCartId($cart->getId());
-        $product_collection->setWhereItemType($product_type);
-        $product_collection->setWhereItemId($product_id);
+        $product_collection->setWhereItemType($product->getUnqualifiedShortClassName());
+        $product_collection->setWhereItemId($product->getId());
 
         /** @var CartItemEntity $cart_item */
         $cart_item = $product_collection->getFirstObjectFromCollection();
+        if (!$cart_item) {
+            $cart_item = new CartItemEntity;
+            $cart_item->setCartId($cart->getId());
+            $cart_item->setItemId($product->getId());
+            $cart_item->setItemType($product->getUnqualifiedShortClassName());
+            $cart_item->save();
+        }
 
         return $cart_item;
     }
@@ -109,9 +120,10 @@ class ModuleCart
     /**
      * @param CartItemEntity $cart_item
      * @param int $amount
+     *
      * @return CartItemEntity
      */
-    public static function addItem(CartItemEntity $cart_item, $amount = 0)
+    public static function addItem(CartItemEntity $cart_item, $amount = 0): CartItemEntity
     {
         $cart = self::getCurrentCart();
 
