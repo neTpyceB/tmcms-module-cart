@@ -24,19 +24,19 @@ class ModuleCart
     private static $_cart;
 
     /**
-     * @param string $product_type
+     * @param Entity $product_entity
      *
-     * @return array
+     * @return CartItemEntityRepository
      */
-    public static function getCurrentCartItems(string $product_type): array
+    public static function getCurrentCartItems(Entity $product_entity): CartItemEntityRepository
     {
         $cart = self::getCurrentCart();
 
         $product_collection = new CartItemEntityRepository();
         $product_collection->setWhereCartId($cart->getId());
-        $product_collection->setWhereItemType($product_type);
+        $product_collection->setWhereItemType($product_entity->getUnqualifiedShortClassName());
 
-        return $product_collection->getAsArrayOfObjects();
+        return $product_collection;
     }
 
     /**
