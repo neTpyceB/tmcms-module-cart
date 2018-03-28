@@ -24,26 +24,31 @@ class ModuleCart
     private static $_cart;
 
     /**
-     * @param Entity $product_entity
+     * @param Entity|string $product_entity_or_type
      *
      * @return CartItemEntityRepository
+     * @throws \Exception
      */
-    public static function getCurrentCartItems(Entity $product_entity): CartItemEntityRepository
+    public static function getCurrentCartItems($product_entity_or_type): CartItemEntityRepository
     {
+        $type = \is_string($product_entity_or_type) ? $product_entity_or_type : $product_entity_or_type->getUnqualifiedShortClassName();
+
         $cart = self::getCurrentCart();
 
         $product_collection = new CartItemEntityRepository();
         $product_collection->setWhereCartId($cart->getId());
-        $product_collection->setWhereItemType($product_entity->getUnqualifiedShortClassName());
+        $product_collection->setWhereItemType($type);
 
         return $product_collection;
     }
 
     /**
      * @param int $client_id
+     *
      * @return CartEntity
+     * @throws \Exception
      */
-    public static function getCurrentCart($client_id = 0)
+    public static function getCurrentCart($client_id = 0): CartEntity
     {
         // Check local cache
         if (self::$_cart) {
@@ -76,9 +81,13 @@ class ModuleCart
 
         //Save for cache
         self::$_cart = $cart;
+
         return $cart;
     }
 
+    /**
+     * @throws \Exception
+     */
     private static function removeOldCarts()
     {
         if (random_int(0, 10000)) {
@@ -94,6 +103,7 @@ class ModuleCart
      * @param Entity $product
      *
      * @return CartItemEntity
+     * @throws \Exception
      */
     public static function getCurrentCartItem(Entity $product): CartItemEntity
     {
@@ -122,6 +132,7 @@ class ModuleCart
      * @param int $amount
      *
      * @return CartItemEntity
+     * @throws \Exception
      */
     public static function addItem(CartItemEntity $cart_item, $amount = 0): CartItemEntity
     {
@@ -168,7 +179,7 @@ class ModuleCart
      * @param Entity|null $product
      *
      * @return array of data
-     *
+     * @throws \Exception
      */
     public static function getCurrentCartProductIds(Entity $product = null): array
     {
@@ -185,9 +196,11 @@ class ModuleCart
 
     /**
      * @param CartItemEntity $cart_item
-     * @return CartItemEntity|\TMCms\Orm\Entity
+     *
+     * @return CartItemEntity
+     * @throws \Exception
      */
-    public static function setItemInCart(CartItemEntity $cart_item)
+    public static function setItemInCart(CartItemEntity $cart_item): CartItemEntity
     {
         $cart = self::getCurrentCart();
 
@@ -220,6 +233,9 @@ class ModuleCart
         return $product;
     }
 
+    /**
+     * @throws \Exception
+     */
     public static function clearCurrentCart() {
         $cart = self::getCurrentCart();
 
@@ -228,6 +244,7 @@ class ModuleCart
 
     /**
      * @param Entity $product
+     *
      * @return CartItemEntity
      */
     public static function createCartItemFromProductObject(Entity $product): CartItemEntity
