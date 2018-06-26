@@ -105,22 +105,28 @@ class ModuleCart
      * @return CartItemEntity
      * @throws \Exception
      */
-    public static function getCurrentCartItem(Entity $product): CartItemEntity
+    public static function getCurrentCartItem($product, $type=''): CartItemEntity
     {
         $cart = self::getCurrentCart();
 
+        if($product instanceof Entity){
+            $product_id = $product->getId();
+            $type = \is_string($type) ? $type : $product->getUnqualifiedShortClassName();
+        }else{
+            $product_id = (int)$product;
+        }
         $product_collection = new CartItemEntityRepository();
         $product_collection->setWhereCartId($cart->getId());
-        $product_collection->setWhereItemType($product->getUnqualifiedShortClassName());
-        $product_collection->setWhereItemId($product->getId());
+        $product_collection->setWhereItemType($type);
+        $product_collection->setWhereItemId($product);
 
         /** @var CartItemEntity $cart_item */
         $cart_item = $product_collection->getFirstObjectFromCollection();
         if (!$cart_item) {
             $cart_item = new CartItemEntity;
             $cart_item->setCartId($cart->getId());
-            $cart_item->setItemId($product->getId());
-            $cart_item->setItemType($product->getUnqualifiedShortClassName());
+            $cart_item->setItemId($product_id);
+            $cart_item->setItemType($type);
             $cart_item->save();
         }
 
