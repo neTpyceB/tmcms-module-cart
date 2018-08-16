@@ -29,11 +29,11 @@ class ModuleCart
      * @return CartItemEntityRepository
      * @throws \Exception
      */
-    public static function getCurrentCartItems($product_entity_or_type): CartItemEntityRepository
+    public static function getCurrentCartItems($product_entity_or_type, $client_id = 0): CartItemEntityRepository
     {
         $type = \is_string($product_entity_or_type) ? $product_entity_or_type : $product_entity_or_type->getUnqualifiedShortClassName();
 
-        $cart = self::getCurrentCart();
+        $cart = self::getCurrentCart($client_id);
 
         $product_collection = new CartItemEntityRepository();
         $product_collection->setWhereCartId($cart->getId());
@@ -105,9 +105,9 @@ class ModuleCart
      * @return CartItemEntity
      * @throws \Exception
      */
-    public static function getCurrentCartItem($product, $type=''): CartItemEntity
+    public static function getCurrentCartItem($product, $type='', $client_id = 0): CartItemEntity
     {
-        $cart = self::getCurrentCart();
+        $cart = self::getCurrentCart($client_id);
 
         if($product instanceof Entity){
             $product_id = $product->getId();
@@ -140,9 +140,9 @@ class ModuleCart
      * @return CartItemEntity
      * @throws \Exception
      */
-    public static function addItem(CartItemEntity $cart_item, $amount = 0): CartItemEntity
+    public static function addItem(CartItemEntity $cart_item, $amount = 0, $client_id = 0): CartItemEntity
     {
-        $cart = self::getCurrentCart();
+        $cart = self::getCurrentCart($client_id);
 
         // For easier way
         if ($amount) {
@@ -187,9 +187,9 @@ class ModuleCart
      * @return array of data
      * @throws \Exception
      */
-    public static function getCurrentCartProductIds(Entity $product = null): array
+    public static function getCurrentCartProductIds(Entity $product = null, $client_id = 0): array
     {
-        $cart = self::getCurrentCart();
+        $cart = self::getCurrentCart($client_id);
 
         $product_collection = new CartItemEntityRepository();
         $product_collection->setWhereCartId($cart->getId());
@@ -206,9 +206,9 @@ class ModuleCart
      * @return CartItemEntity
      * @throws \Exception
      */
-    public static function setItemInCart(CartItemEntity $cart_item): CartItemEntity
+    public static function setItemInCart(CartItemEntity $cart_item, $client_id = 0): CartItemEntity
     {
-        $cart = self::getCurrentCart();
+        $cart = self::getCurrentCart($client_id);
 
         $product_collection = new CartItemEntityRepository();
         $product_collection->setWhereCartId($cart->getId());
@@ -240,15 +240,6 @@ class ModuleCart
     }
 
     /**
-     * @throws \Exception
-     */
-    public static function clearCurrentCart() {
-        $cart = self::getCurrentCart();
-
-        $cart->deleteObject();
-    }
-
-    /**
      * @param Entity $product
      *
      * @return CartItemEntity
@@ -260,5 +251,14 @@ class ModuleCart
         $cart_item->setItemType($product->getUnqualifiedShortClassName());
 
         return $cart_item;
+    }
+
+    /**
+     * @throws \Exception
+     */
+    public static function clearCurrentCart($client_id = 0) {
+        $cart = self::getCurrentCart($client_id);
+
+        $cart->deleteObject();
     }
 }
